@@ -6,8 +6,6 @@
 
 <script>
 import MainPage from './components/MainPage.vue'
-
-
 export default {
   name: 'App',
   components: {
@@ -17,5 +15,4 @@ export default {
 </script>
 
 <style>
-
 </style>

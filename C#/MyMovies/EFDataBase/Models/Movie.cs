@@ -3,9 +3,11 @@ using System.ComponentModel.DataAnnotations;
 
 namespace MyMovies.EFDataBase.Models
 {
+    /// <summary>
+    /// Model filmu w bazie danych.
+    /// </summary>
     public class Movie
-    {
-        //Konfiguracja relacji Movies
+    { 
         [Key]
         [Required]
         public int Id { get; set; }

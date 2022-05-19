@@ -4,9 +4,7 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 import App from './App.vue'
 import store from './store'
 
-
 Vue.use(Vuelidate)
-
 Vue.config.productionTip = false
 
 new Vue({

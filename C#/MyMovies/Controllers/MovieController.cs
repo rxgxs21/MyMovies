@@ -6,8 +6,11 @@ using MyMovies.EFDataBase.Models;
 using MyMovies.EFDataBase.MoviesContext;
 using Microsoft.EntityFrameworkCore;
 
+/// <summary>
+/// API relacji Movies
+/// </summary>
 namespace MyMovies.Controllers
-{   //API relacji Movies
+{   
     [Route("api/[controller]")]
     [ApiController]
     public class MovieController : ControllerBase
@@ -20,9 +23,12 @@ namespace MyMovies.Controllers
             _configuration = configuration;
             _db = db;
         }
-        //API:
 
-        //get
+        /// <summary>
+        /// Metoda zwraca odpowiedź w formie listy filmów formatu JSON.
+        /// </summary>
+        /// 
+        /// <returns>Status</returns>
         [HttpGet]
         public IActionResult Get()
         {
@@ -30,21 +36,24 @@ namespace MyMovies.Controllers
             {
                 var movies = _db.Movies.ToList();
                 return Ok(movies);
-
             }
             catch (Exception)
             {
                 return StatusCode(500, "An error has occured");
             }
         }
-        //post
+        
+        /// <summary>
+        /// Metoda tworzy nowy film w bazie danych.
+        /// </summary>
+        /// 
+        /// <returns>Status</returns>
         [HttpPost]
         public IActionResult Create([FromBody] Movie movie)
         {
             Movie mov = new Movie();
             mov.Name = movie.Name;
             mov.RealseDate = movie.RealseDate;
-
             try
             {
                 _db.Movies.Add(mov);
@@ -54,10 +63,14 @@ namespace MyMovies.Controllers
             {
                 return StatusCode(500, "An error has occured");
             }
-            var movies = _db.Movies.ToList();
             return Ok();
         }
-        //put
+
+        /// <summary>
+        /// Metoda edytuje dane filmu w bazie danych.
+        /// </summary>
+        /// 
+        /// <returns>Status</returns>
         [HttpPut]
         public IActionResult Update([FromBody] Movie movie)
         {
@@ -65,7 +78,6 @@ namespace MyMovies.Controllers
             {
                 var mov = _db.Movies.FirstOrDefault(a => a.Id == movie.Id);
                 if (mov == null) { return StatusCode(500, "Movie not found"); }
-
                 mov.Name = movie.Name;
                 mov.RealseDate = movie.RealseDate;
 
@@ -78,7 +90,11 @@ namespace MyMovies.Controllers
                 return StatusCode(500, "An error has occured");
             }
         }
-        //delete
+        /// <summary>
+        /// Metoda usuwa filmu z bazy danych.
+        /// </summary>
+        /// 
+        /// <returns>Status</returns>
         [HttpDelete("{Id}")]
         public IActionResult Delete([FromRoute] int Id)
         {

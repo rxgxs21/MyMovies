@@ -15,15 +15,9 @@
         <table class="table table-striped">
             <thead>
                 <tr>
-                    <th>
-                        Title
-                    </th>
-                    <th  class="float-right">
-                        Release Date
-                    </th>
-                    <th class="float-right">
-                        Options
-                    </th>
+                    <th>Title</th>
+                    <th>Release Date</th>
+                    <th>Options</th>
                 </tr>
             </thead>
             <!--Wypisanie danych filmów w osobnych wierszach oraz przycisków: edit, view, delete-->
@@ -101,7 +95,7 @@
                                         <input type="button" class="btn btn-primary" v-model="buttonMassege"
                                             @click="updateClick" :disable="btnDisable" v-if="Id != null">
                                     </div>
-
+                                    
                                     <div v-if="showModel" class="label-group mb-3">
                                         <div>
                                             <label>Title: {{ Name }}</label>
@@ -114,8 +108,6 @@
                                                 @click="closeShow">
                                         </div>
                                     </div>
-
-
                                 </div>
                             </div>
                         </div>
@@ -123,24 +115,21 @@
                 </div>
             </transition>
         </div>
-
     </div>
 </template>
 
 <script>
-
 import { required, maxLength, between } from 'vuelidate/lib/validators'
 import axios from 'axios'
 import { variables } from './variables.js'
-
 export default {
     name: 'MainPage',
     data() {
         return {
-            Id: null,
-            Name: "",
-            RealseDate: null,
-            movies: [], 
+            Id: null, //globalne id filmu
+            Name: "", //globalny tytuł filmu
+            RealseDate: null, //globalna data wydania
+            movies: [], //lista filmów
             modalTitle: "", //tytuł okna modalnego
             showModel: false, //wywołanie okna modalnego
             myModel: false, //tryb okna modalnego: false: add, edit/ true: view
@@ -148,6 +137,7 @@ export default {
             btnDisable: false //dezaktywacja przycisku
         }
     },
+
     //walidacje zgodne z bazą danych
     validations: {
         Name: {
@@ -158,18 +148,25 @@ export default {
             between: between(1900, 2100)
         }
     },
+
     mounted() {
         this.refreshData();
     },
+
     methods: {
-        //odświeżanie danych
+        /**
+         * Odświeża dane listy filmów.
+         */
         refreshData() {
             axios.get(variables.API_URL)
                 .then((response) => {
                     this.movies = response.data;
                 });
         },
-        //wywołanie okna modalnego w trybie add
+
+        /**
+         * Otwiera okno modalne w trybie: Add.
+         */
         addClick() {
             this.Name = "";
             this.RealseDate = null;
@@ -178,7 +175,10 @@ export default {
             this.myModel = true;
             this.Id = null;
         },
-        //wywołanie okna modalnego w trybie edit
+
+        /**
+         * Otwiera okno modalne w trybie: Edit.
+         */
         editClick(mov) {
             this.modalTitle = "Edit Movie";
             this.Id = mov.Id;
@@ -187,7 +187,10 @@ export default {
             this.myModel = true;
             this.buttonMassege = "Edit Movie";
         },
-        //wywołanie okna modalnego w trybie view
+
+        /**
+         * Otwiera okno modalne w trybie: Show.
+         */
         showClick(mov) {
             this.showModel = true;
             this.myModel = true;
@@ -197,7 +200,10 @@ export default {
             this.Id = mov.Id;
             this.buttonMassege = "ok";
         },
-        //potwierdzenie dodania/ API
+
+        /**
+         * Dodaje nowy film do bazy danych.
+         */
         createClick() {
             this.$v.$touch();
             if (!this.$v.$invalid) {
@@ -213,7 +219,10 @@ export default {
                     });
             }
         },
-        //potwierdzenie edycji/ API
+
+        /**
+         * Edytuje dane filmu w bazie danych.
+         */
         updateClick() {
             this.$v.$touch();
             if (!this.$v.$invalid) {
@@ -230,27 +239,30 @@ export default {
                     });
             }
         },
-        //potwierdzenie usunięcia/ API
+
+        /**
+         * Usuwa film z bazy danych
+         */
         deleteClick(mov) {
             if (!confirm("Are you sure you want to delete " + mov.Name + " from movie list?")) {
                 return;
             }
             axios.delete(variables.API_URL + mov.Id)
-                .then(() => {
-                    this.refreshData();
-                });
+                .then(() => this.refreshData());
         },
-        //zamkniecie okna modalnego w trybie view
+
+        /**
+         * Zamyka okno modalne(Show).
+         */
         closeShow() {
             this.showModel = false;
             this.myModel = false;
             this.modalTitle = "";
             this.Name = "",
-                this.RealseDate = null;
+            this.RealseDate = null;
             this.Id = null;
             this.buttonMassege = "";
         }
-
     }
 }
 </script>
